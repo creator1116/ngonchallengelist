@@ -32,7 +32,6 @@
   </header>
 
   <main class="main-layout">
-    <!-- Left: Challenge List -->
     <aside class="challenge-sidebar">
       <div class="sidebar-header">
         <div class="sidebar-meta">
@@ -57,7 +56,6 @@
       <div class="challenge-list" id="challenge-list"></div>
     </aside>
 
-    <!-- Right: Detail View -->
     <section class="detail-panel" id="detail-panel">
       <div class="detail-placeholder">
         <div class="placeholder-icon">⬡</div>
@@ -66,7 +64,6 @@
     </section>
   </main>
 
-  <!-- Rules Modal -->
   <div class="modal-overlay" id="rules-modal">
     <div class="modal-box">
       <button class="modal-close" id="modal-close">✕</button>
@@ -83,7 +80,6 @@
   </div>
 
   <script>
-    // Init list page
     document.addEventListener('DOMContentLoaded', () => {
       renderChallengeList();
 
@@ -108,7 +104,6 @@
       const listEl = document.getElementById('challenge-list');
       listEl.innerHTML = '';
 
-      // Sort by param desc (hardest first)
       const filtered = CHALLENGES.filter(c => {
         if (diffFilter !== 'all' && c.tier !== diffFilter) return false;
         return true;

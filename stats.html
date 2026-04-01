@@ -32,7 +32,6 @@
   </header>
 
   <main class="stats-layout">
-    <!-- Global Leaderboard -->
     <section class="stats-section">
       <div class="stats-header-row">
         <h2 class="stats-section-title">Global Leaderboard</h2>
@@ -47,19 +46,16 @@
       <div class="global-lb" id="global-lb"></div>
     </section>
 
-    <!-- Player Profile -->
     <section class="player-section" id="player-section" style="display:none;">
       <div class="player-profile" id="player-profile"></div>
     </section>
 
-    <!-- Community Stats -->
     <section class="community-stats">
       <h2 class="stats-section-title">Community Stats</h2>
       <div class="stats-grid" id="stats-grid"></div>
     </section>
   </main>
 
-  <!-- Rules Modal -->
   <div class="modal-overlay" id="rules-modal">
     <div class="modal-box">
       <button class="modal-close" id="modal-close">✕</button>
@@ -104,7 +100,6 @@
           if (!r.name) return;
           if (ctrlFilter !== 'all' && r.control !== ctrlFilter) return;
           if (!players[r.name]) players[r.name] = { name: r.name, points: 0, completions: [], control: r.control };
-          // Points awarded by rank within this challenge (filtered)
           const filteredRecs = ctrlFilter === 'all' ? c.records.filter(x => x.name) : c.records.filter(x => x.name && x.control === ctrlFilter);
           const rank = filteredRecs.findIndex(x => x.name === r.name);
           const pts = rank === 0 ? 50 : rank === 1 ? 40 : rank === 2 ? 30 : rank === 3 ? 10 : 5;

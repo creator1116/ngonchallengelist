@@ -1,12 +1,4 @@
-// ============================================================
-// n-gon Challenge List — Data & Logic
-// ============================================================
-
-// Difficulty Parameters (new system)
-// Easy=10 (level 1), Normal=30 (level 3), Hard=50 (level 5), Why?=70 (level 7), Duke2pass=95 (level 7, extra constraints)
-
 const CHALLENGES = [
-  // ── EASY (Param 10, range 0–20) ─────────────────────────
   {
     id: 'soggy-love-songs',
     name: 'I love singing soppy love songs in the shower',
@@ -104,8 +96,94 @@ const CHALLENGES = [
       { name: 'Squares', score: '11:39', control: 'Mouse', video: null },
     ]
   },
-
-  // ── NORMAL (Param 30, range 21–40) ───────────────────────
+  {
+    id: 'hello-world',
+    name: 'Hello World!',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat level 1 (Easy).',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'friendly',
+    name: 'Freindly',
+    tier: 'Easy',
+    param: 10,
+    description: 'Get one bot during a run.',
+    scoring: 'Objective',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'n00b-h33',
+    name: 'n-00B H33 H33',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat Training Mode (level 1), no field, no deaths.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'pyromaniac',
+    name: 'Pyromaniac',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat level 1 (Easy) using only explosive damage.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'break-the-mold',
+    name: 'Break the Mold',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat level 1 (Easy) using Spores as your only damage source.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'chatcbt',
+    name: 'ChatCBT',
+    tier: 'Easy',
+    param: 10,
+    description: 'Easy mode with the CPT symmetry tech. Run ends when you reach full health.',
+    scoring: 'Level Reached',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'second-wind',
+    name: 'Second Wind',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat level 20 on Experiment Easy, no starting tech.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'beam-me-up-scotty',
+    name: 'Beam Me Up Scotty',
+    tier: 'Easy',
+    param: 10,
+    description: 'Beat level 1 (Easy) with Wormhole as your primary movement (more than 75% of the time).',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
   {
     id: 'average-joe',
     name: 'Average Joe',
@@ -188,8 +266,105 @@ const CHALLENGES = [
       { name: 'Mr. A. K. #47', score: '2', control: 'Trackpad', video: 'https://youtu.be/loSf4GQJvt4' },
     ]
   },
-
-  // ── HARD (Param 50, range 41–60) ─────────────────────────
+  {
+    id: 'not-a-simple-tank',
+    name: 'Not a Simple Tank',
+    tier: 'Normal',
+    param: 30,
+    description: 'Start with Tungsten Carbide, fluoroantimonic acid, Antiscience, Accretion, and Quenching. Beat level 5 (Hard).',
+    scoring: 'Level Reached',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'baby-blocks',
+    name: 'Baby Blocks',
+    tier: 'Normal',
+    param: 30,
+    description: 'Beat level 6 with only Blocks as a damage source.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'angery-bird',
+    name: 'Angery Bird',
+    tier: 'Normal',
+    param: 30,
+    description: 'On level 3 (Normal), use ship (harpoon), Autonomous Defence, and Piezoelectricity.',
+    scoring: 'Level Reached',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'dont-come-to-his-party',
+    name: 'Dont Come to his Party',
+    tier: 'Normal',
+    param: 30,
+    description: 'This.',
+    scoring: 'Level Reached',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'bosnian-engineer',
+    name: 'Bosnian Engineer',
+    tier: 'Normal',
+    param: 30,
+    description: 'Beat level 3 (Normal) using only Mine or Turret damage.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'geometry-dash',
+    name: 'Geometry Dash',
+    tier: 'Normal',
+    param: 30,
+    description: "Get as many community levels as you can in one Normal run. Don't stop moving in them.",
+    scoring: 'Objective',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'audio-jungle-dj',
+    name: 'Audio Jungle DJ',
+    tier: 'Normal',
+    param: 30,
+    description: 'Beat level 3 (Normal) with your microphone on, audible music in the recording, and be a little loud.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'truely-friendly',
+    name: 'Truely Friendly',
+    tier: 'Normal',
+    param: 30,
+    description: 'Get 25 bots during a run (Normal, Hard, or Why?).',
+    scoring: 'Objective',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'playing-games-too-long',
+    name: 'Playing Games for too Long Can Strain Your Eyes',
+    tier: 'Normal',
+    param: 30,
+    description: "On level 5 (Hard), at levels 5 and 10, leave your keyboard or don't touch it for 2 minutes (grab a snack).",
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
   {
     id: 'should-i-be-pacifist',
     name: 'Should I be a pacifist?',
@@ -269,8 +444,39 @@ const CHALLENGES = [
       { name: 'GubsEnthusiast', score: '12', control: 'Mouse', video: null },
     ]
   },
-
-  // ── WHY? (Param 70, range 61–80) ─────────────────────────
+  {
+    id: 'river-styx',
+    name: 'River stYX',
+    tier: 'Hard',
+    param: 50,
+    description: 'Challenge TBD.',
+    scoring: 'Objective',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'unpossible-hard',
+    name: 'Unpossible (Hard)',
+    tier: 'Hard',
+    param: 50,
+    description: 'Beat level 5 (Hard) without a gun. You may use Harpoon and any field except Molecular Assembler.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'explosive-factory',
+    name: 'Explosive Factory',
+    tier: 'Hard',
+    param: 50,
+    description: 'On level 3 (Normal), start with Grenade Production junk tech and Molecular Assembler Missile Print. This is your only damage source — no new guns, fields, or regular tech (gun tech for missiles/grenades is allowed).',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
   {
     id: 'hardly-working',
     name: 'Hardly Working',
@@ -310,8 +516,6 @@ const CHALLENGES = [
       { name: 'Proto', score: '7', control: 'Trackpad', video: null },
     ]
   },
-
-  // ── DUKE2PASS (Param 95, range 81–100) ───────────────────
   {
     id: 'story-of-undertale',
     name: 'Story of Undertale',
@@ -424,11 +628,63 @@ const CHALLENGES = [
     trackpadVictor: null,
     records: []
   },
+  {
+    id: 'just-practice',
+    name: 'Just Practice',
+    tier: 'Duke2pass',
+    param: 95,
+    description: 'Beat level 5 in Why? with no gun and no new field.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'too-friendly',
+    name: 'Too Friendly',
+    tier: 'Duke2pass',
+    param: 95,
+    description: 'Get 32 or more bots in one run (any difficulty, no Experiment).',
+    scoring: 'Objective',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'wind-wind-wind',
+    name: 'wind wind wind',
+    tier: 'Duke2pass',
+    param: 95,
+    description: 'Get to level 30 on Why? Experiment (any starting tech you want).',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'how',
+    name: 'How?',
+    tier: 'Duke2pass',
+    param: 95,
+    description: 'Beat level 7 (Why?).',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
+  {
+    id: 'glass-cannon',
+    name: 'Glass Cannon',
+    tier: 'Duke2pass',
+    param: 95,
+    description: 'Beat level 7 (Why?) with 0 defense the entire run and at least 30 damage by the final level.',
+    scoring: 'Time',
+    mouseVictor: null,
+    trackpadVictor: null,
+    records: []
+  },
 ];
 
-// ──────────────────────────────────────────────────────────
-// Utility: find challenge by id
-// ──────────────────────────────────────────────────────────
 function findChallenge(id) {
   return CHALLENGES.find(c => c.id === id) || null;
 }
