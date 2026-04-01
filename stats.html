@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n-gon — Stats & Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <div class="scan-lines"></div>
+  <div class="noise"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <span class="logo-icon">⬡</span>
+        <div>
+          <h1 class="site-title">n-gon</h1>
+          <p class="site-subtitle">Challenge List — Season 2</p>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link" data-page="list">Challenge List</a>
+        <a href="stats.html" class="nav-link active" data-page="stats">Stats & Leaderboard</a>
+        <a href="#rules-modal" class="nav-link nav-rules" id="rules-btn">Rules</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="stats-layout">
+    <!-- Global Leaderboard -->
+    <section class="stats-section">
+      <div class="stats-header-row">
+        <h2 class="stats-section-title">Global Leaderboard</h2>
+        <div class="filter-controls">
+          <select class="filter-select" id="lb-filter">
+            <option value="all">Overall</option>
+            <option value="Mouse">Mouse Only</option>
+            <option value="Trackpad">Trackpad Only</option>
+          </select>
+        </div>
+      </div>
+      <div class="global-lb" id="global-lb"></div>
+    </section>
+
+    <!-- Player Profile -->
+    <section class="player-section" id="player-section" style="display:none;">
+      <div class="player-profile" id="player-profile"></div>
+    </section>
+
+    <!-- Community Stats -->
+    <section class="community-stats">
+      <h2 class="stats-section-title">Community Stats</h2>
+      <div class="stats-grid" id="stats-grid"></div>
+    </section>
+  </main>
+
+  <!-- Rules Modal -->
+  <div class="modal-overlay" id="rules-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close">✕</button>
+      <h2 class="modal-title">Rules</h2>
+      <ol class="rules-list">
+        <li>Be honest — no testing mode, game files remain unaltered. No community maps unless specified. Do not spawn with any tech in Experiment unless stated.</li>
+        <li>Do not delete or alter the scores of others. Be a good sport.</li>
+        <li>Do not vandalize the sheet.</li>
+        <li>Videos are required to receive points. Upload to Google Drive or YouTube (Unlisted).</li>
+        <li>Be honest about using trackpad or mouse. Set frame cap to 60.</li>
+        <li>Join the Discord: <a href="https://discord.gg/X7sm27kR" target="_blank" class="link-accent">discord.gg/X7sm27kR</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGlobalLB('all');
+      renderCommunityStats();
+
+      document.getElementById('lb-filter').addEventListener('change', (e) => {
+        renderGlobalLB(e.target.value);
+        document.getElementById('player-section').style.display = 'none';
+      });
+
+      document.getElementById('rules-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('rules-modal').classList.add('open');
+      });
+      document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('rules-modal').classList.remove('open');
+      });
+      document.getElementById('rules-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+      });
+    });
+
+    function buildPlayerStats(ctrlFilter) {
+      const players = {};
+      CHALLENGES.forEach(c => {
+        c.records.forEach(r => {
+          if (!r.name) return;
+          if (ctrlFilter !== 'all' && r.control !== ctrlFilter) return;
+          if (!players[r.name]) players[r.name] = { name: r.name, points: 0, completions: [], control: r.control };
+          // Points awarded by rank within this challenge (filtered)
+          const filteredRecs = ctrlFilter === 'all' ? c.records.filter(x => x.name) : c.records.filter(x => x.name && x.control === ctrlFilter);
+          const rank = filteredRecs.findIndex(x => x.name === r.name);
+          const pts = rank === 0 ? 50 : rank === 1 ? 40 : rank === 2 ? 30 : rank === 3 ? 10 : 5;
+          players[r.name].points += pts;
+          players[r.name].completions.push({ challenge: c, score: r.score, rank: rank + 1, pts, video: r.video });
+        });
+      });
+      return Object.values(players).sort((a, b) => b.points - a.points);
+    }
+
+    function renderGlobalLB(filter) {
+      const lb = buildPlayerStats(filter);
+      const el = document.getElementById('global-lb');
+      el.innerHTML = '';
+
+      lb.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = `lb-card ${i === 0 ? 'lb-gold' : i === 1 ? 'lb-silver' : i === 2 ? 'lb-bronze' : ''}`;
+        card.innerHTML = `
+          <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`}</div>
+          <div class="lb-player-info">
+            <span class="lb-name">${p.name}</span>
+            <span class="lb-completions">${p.completions.length} completion${p.completions.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="lb-points">${p.points}<span class="pts-label"> pts</span></div>
+        `;
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.lb-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          renderPlayerProfile(p);
+        });
+        el.appendChild(card);
+      });
+    }
+
+    function renderPlayerProfile(player) {
+      const section = document.getElementById('player-section');
+      const el = document.getElementById('player-profile');
+      section.style.display = 'block';
+
+      const tierCounts = {};
+      player.completions.forEach(c => {
+        const t = c.challenge.tier;
+        tierCounts[t] = (tierCounts[t] || 0) + 1;
+      });
+
+      el.innerHTML = `
+        <div class="profile-header">
+          <div class="profile-avatar">${player.name.charAt(0).toUpperCase()}</div>
+          <div class="profile-meta">
+            <h3 class="profile-name">${player.name}</h3>
+            <div class="profile-badges">
+              ${Object.entries(tierCounts).map(([t, n]) => `<span class="tier-badge-sm tier-badge-${t.toLowerCase()}">${n}× ${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="profile-total">${player.points}<span class="pts-label"> pts</span></div>
+        </div>
+        <h4 class="completions-title">Completions</h4>
+        <div class="completions-grid">
+          ${player.completions.sort((a,b) => b.challenge.param - a.challenge.param).map(c => `
+            <div class="completion-card tier-border-${c.challenge.tier.toLowerCase()}">
+              <span class="comp-tier tier-badge-${c.challenge.tier.toLowerCase()}">${c.challenge.tier}</span>
+              <span class="comp-name">${c.challenge.name}</span>
+              <span class="comp-score">${c.score}</span>
+              <span class="comp-rank">#${c.rank} — ${c.pts} pts</span>
+              ${c.video ? `<a href="${c.video}" target="_blank" class="comp-video">▶</a>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderCommunityStats() {
+      const el = document.getElementById('stats-grid');
+      const allRecords = CHALLENGES.flatMap(c => c.records.filter(r => r.name));
+      const uniquePlayers = [...new Set(allRecords.map(r => r.name))];
+      const totalCompletions = allRecords.length;
+      const completedChallenges = CHALLENGES.filter(c => c.records.some(r => r.name)).length;
+
+      const tierBreakdown = {};
+      CHALLENGES.forEach(c => {
+        if (!tierBreakdown[c.tier]) tierBreakdown[c.tier] = { total: 0, completed: 0 };
+        tierBreakdown[c.tier].total++;
+        if (c.records.some(r => r.name)) tierBreakdown[c.tier].completed++;
+      });
+
+      const topPlayer = buildPlayerStats('all')[0];
+
+      el.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${uniquePlayers.length}</div>
+          <div class="stat-label">Active Players</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${totalCompletions}</div>
+          <div class="stat-label">Total Completions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${completedChallenges}/${CHALLENGES.length}</div>
+          <div class="stat-label">Challenges Beaten</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number accent-green">${topPlayer ? topPlayer.name : '—'}</div>
+          <div class="stat-label">Top Player</div>
+        </div>
+        ${Object.entries(tierBreakdown).reverse().map(([t, d]) => `
+          <div class="stat-card tier-border-${t.toLowerCase()}">
+            <div class="stat-number">${d.completed}/${d.total}</div>
+            <div class="stat-label tier-badge-${t.toLowerCase()}">${t}</div>
+          </div>
+        `).join('')}
+      `;
+    }
+  </script>
+</body>
+</html>

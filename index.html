@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n-gon Challenge List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <div class="scan-lines"></div>
+  <div class="noise"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <span class="logo-icon">⬡</span>
+        <div>
+          <h1 class="site-title">n-gon</h1>
+          <p class="site-subtitle">Challenge List — Season 2</p>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link active" data-page="list">Challenge List</a>
+        <a href="stats.html" class="nav-link" data-page="stats">Stats & Leaderboard</a>
+        <a href="#rules-modal" class="nav-link nav-rules" id="rules-btn">Rules</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Left: Challenge List -->
+    <aside class="challenge-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-meta">
+          <span class="total-challenges" id="total-count">18 Challenges</span>
+          <div class="filter-controls">
+            <select class="filter-select" id="difficulty-filter">
+              <option value="all">All Tiers</option>
+              <option value="Duke2pass">Duke2pass (level 7★)</option>
+              <option value="Why?">Why? (level 7)</option>
+              <option value="Hard">Hard (level 5)</option>
+              <option value="Normal">Normal (level 3)</option>
+              <option value="Easy">Easy (level 1)</option>
+            </select>
+            <select class="filter-select" id="control-filter">
+              <option value="all">All Controls</option>
+              <option value="Mouse">Mouse</option>
+              <option value="Trackpad">Trackpad</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="challenge-list" id="challenge-list"></div>
+    </aside>
+
+    <!-- Right: Detail View -->
+    <section class="detail-panel" id="detail-panel">
+      <div class="detail-placeholder">
+        <div class="placeholder-icon">⬡</div>
+        <p>Select a challenge to view its leaderboard</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rules Modal -->
+  <div class="modal-overlay" id="rules-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close">✕</button>
+      <h2 class="modal-title">Rules</h2>
+      <ol class="rules-list">
+        <li>Be honest — no testing mode, game files remain unaltered. No community maps unless specified. Do not spawn with any tech in Experiment unless stated. No Experiment unless required or stated.</li>
+        <li>Do not delete or alter the scores of others. Be a good sport.</li>
+        <li>Do not vandalize the sheet.</li>
+        <li>Videos are required to receive points. Upload to Google Drive or YouTube (Unlisted). Submit records in the Submissions tab.</li>
+        <li>Be honest about using trackpad or mouse. Separate leaderboards exist for each. Set frame cap to 60.</li>
+        <li>Join the Discord: <a href="https://discord.gg/X7sm27kR" target="_blank" class="link-accent">discord.gg/X7sm27kR</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Init list page
+    document.addEventListener('DOMContentLoaded', () => {
+      renderChallengeList();
+
+      document.getElementById('difficulty-filter').addEventListener('change', renderChallengeList);
+      document.getElementById('control-filter').addEventListener('change', renderChallengeList);
+
+      document.getElementById('rules-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('rules-modal').classList.add('open');
+      });
+      document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('rules-modal').classList.remove('open');
+      });
+      document.getElementById('rules-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+      });
+    });
+
+    function renderChallengeList() {
+      const diffFilter = document.getElementById('difficulty-filter').value;
+      const ctrlFilter = document.getElementById('control-filter').value;
+      const listEl = document.getElementById('challenge-list');
+      listEl.innerHTML = '';
+
+      // Sort by param desc (hardest first)
+      const filtered = CHALLENGES.filter(c => {
+        if (diffFilter !== 'all' && c.tier !== diffFilter) return false;
+        return true;
+      }).sort((a, b) => b.param - a.param);
+
+      document.getElementById('total-count').textContent = `${filtered.length} Challenge${filtered.length !== 1 ? 's' : ''}`;
+
+      let lastTier = null;
+      filtered.forEach((c, i) => {
+        if (c.tier !== lastTier) {
+          const sep = document.createElement('div');
+          sep.className = 'tier-separator';
+          sep.innerHTML = `<span class="tier-label tier-${c.tier.toLowerCase()}">${c.tier}</span><span class="tier-param">Param ${c.param}</span>`;
+          listEl.appendChild(sep);
+          lastTier = c.tier;
+        }
+
+        const records = ctrlFilter === 'all' ? c.records : c.records.filter(r => r.control === ctrlFilter || !r.control);
+        const hasRecords = records.some(r => r.name);
+
+        const item = document.createElement('div');
+        item.className = `challenge-item tier-border-${c.tier.toLowerCase()}`;
+        item.dataset.id = c.id;
+        item.innerHTML = `
+          <div class="challenge-item-inner">
+            <div class="challenge-rank">#${i + 1}</div>
+            <div class="challenge-info">
+              <span class="challenge-name">${c.name}</span>
+              <span class="challenge-meta">${hasRecords ? records.filter(r=>r.name).length + ' record(s)' : '<em>No completions</em>'}</span>
+            </div>
+            <div class="challenge-param-badge tier-badge-${c.tier.toLowerCase()}">${c.param}</div>
+          </div>
+        `;
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.challenge-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+          renderDetail(c, ctrlFilter);
+        });
+        listEl.appendChild(item);
+      });
+    }
+
+    function renderDetail(challenge, ctrlFilter) {
+      const panel = document.getElementById('detail-panel');
+      const records = ctrlFilter === 'all' ? challenge.records : challenge.records.filter(r => r.control === ctrlFilter || !r.control);
+      const validRecords = records.filter(r => r.name);
+
+      panel.innerHTML = `
+        <div class="detail-content">
+          <div class="detail-header">
+            <div class="detail-tier-badge tier-badge-${challenge.tier.toLowerCase()}">${challenge.tier} — Param ${challenge.param}</div>
+            <h2 class="detail-title">${challenge.name}</h2>
+            ${challenge.description ? `<p class="detail-desc">${challenge.description}</p>` : ''}
+            <div class="detail-stats-row">
+              <div class="detail-stat"><span class="stat-label">Scoring</span><span class="stat-val">${challenge.scoring}</span></div>
+              <div class="detail-stat"><span class="stat-label">Records</span><span class="stat-val">${validRecords.length}</span></div>
+              ${challenge.mouseVictor ? `<div class="detail-stat"><span class="stat-label">Mouse #1</span><span class="stat-val accent-green">${challenge.mouseVictor}</span></div>` : ''}
+              ${challenge.trackpadVictor ? `<div class="detail-stat"><span class="stat-label">Trackpad #1</span><span class="stat-val accent-blue">${challenge.trackpadVictor}</span></div>` : ''}
+            </div>
+          </div>
+
+          <div class="leaderboard-section">
+            <h3 class="leaderboard-title">Completions</h3>
+            ${validRecords.length === 0 ? `
+              <div class="no-records">
+                <span class="no-records-icon">◯</span>
+                <p>No completions yet. Be the first!</p>
+              </div>
+            ` : `
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                    <th>Control</th>
+                    <th>Video</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${validRecords.map((r, i) => `
+                    <tr class="${i === 0 ? 'rank-gold' : i === 1 ? 'rank-silver' : i === 2 ? 'rank-bronze' : ''}">
+                      <td class="rank-cell">
+                        <span class="rank-num">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i+1)}</span>
+                      </td>
+                      <td class="player-cell">${r.name}</td>
+                      <td class="score-cell">${r.score}</td>
+                      <td class="control-cell"><span class="control-tag ${r.control === 'Mouse' ? 'tag-mouse' : r.control === 'Trackpad' ? 'tag-trackpad' : ''}">${r.control || '—'}</span></td>
+                      <td class="video-cell">${r.video ? `<a href="${r.video}" target="_blank" class="video-link">▶ Watch</a>` : '<span class="no-video">—</span>'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            `}
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
