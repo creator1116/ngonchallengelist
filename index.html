@@ -80,7 +80,8 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadChallenges();                                        
       renderChallengeList();
 
       document.getElementById('difficulty-filter').addEventListener('change', renderChallengeList);
